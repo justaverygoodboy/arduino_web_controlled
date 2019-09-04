@@ -24,23 +24,34 @@
    <body>
       <div class="wrapper">
          <h3>LED SWITCH</h3>
+         {{distance}}
          <button class="btn btn-success" onclick="turnFan(1)">Level 1</button>
          <button class="btn btn-warning" onclick="turnFan(2)">Level 2</button>
          <button class="btn btn-info" onclick="turnFan(3)">Level 3</button>
          <button class="btn btn-danger" onclick="turnFan(0)">Turn off</button>
+         <button id="blink" onclick="turnFan(4)">blink:on</button>
       </div>
       
       <script>
          function turnFan(level) {
             var xmlhttp = new XMLHttpRequest();
+            var element=document.getElementById("blink");
             if(level==1)
             {xmlhttp.open("GET","level1",true);}
             else if(level==2)
             {xmlhttp.open("GET","level2",true);}
             else if(level==3)
             {xmlhttp.open("GET","level3",true);}
-            else
+            else if(level==0)
             {xmlhttp.open("GET","turnOff",true)}
+            else if(element.innerHTML.match("blink:on")){
+               element.innerHTML = "blink:off";
+               xmlhttp.open("GET","boff",true);
+            }
+            else{
+               element.innerHTML = "blink:on";
+               xmlhttp.open("GET","bon",true);
+            }
             xmlhttp.send();
          }
       </script>

@@ -3,6 +3,7 @@
 String readString="";
 const int TrigPin=4;
 const int EchoPin=5;
+boolean blinking=true;
 float distance;
 int bright=0;
 int minDis=3;
@@ -28,19 +29,19 @@ void loop() {
   delayMicroseconds(12);
   digitalWrite(TrigPin,LOW);
   distance=pulseIn(EchoPin,HIGH)*0.017;
-  if(distance<minDis){
+  if(distance<minDis&&blinking){
     digitalWrite(3,HIGH);
     delay(65);
     digitalWrite(3,LOW);
     delay(60);
     analogWrite(3,bright);
-  }else if(distance>minDis&&distance<midDis){
+  }else if(distance>minDis&&distance<midDis&&blinking){
     digitalWrite(3,HIGH);
     delay(100);
     digitalWrite(3,LOW);
     delay(100);
     analogWrite(3,bright);
-  }else if(distance>midDis&&distance<largeDis){
+  }else if(distance>midDis&&distance<largeDis&&blinking){
     digitalWrite(3,HIGH);
     delay(150);
     digitalWrite(3,LOW);
@@ -53,7 +54,6 @@ void loop() {
         char c = client.read();
         readString += c;
         if (c == '\n'){
-          Serial.print(readString);
           if(readString.indexOf("level1")>0){
             analogWrite(3,10);
             bright=10;
@@ -68,8 +68,14 @@ void loop() {
             break;}
           if(readString.indexOf("turnOff")>0){
             analogWrite(3,0);
-            bright=0;}
-          sendHTML();
+            bright=0;
+            break;}
+          if(readString.indexOf("bon")>0){
+            blinking=true;
+            break;}
+          if(readString.indexOf("boff")>0){
+            blinking=false;}
+          sendHTML(distance);
           break;}}}
     delay(1);
     client.stop();
